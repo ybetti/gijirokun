@@ -29,12 +29,12 @@
         } else if ('SpeechRecognition' in window) {
           recognition = new SpeechRecognition(); // Edge, Firefox向けのプログラム
         } else {
-          alert('このブラウザは音声認識をサポートしていません。');
+          alert('！このブラウザでは音声認識をサポートしていません！');
           return;
         }
 
         recognition.lang = 'ja-JP'; // 認識言語を日本語に設定
-        recognition.continuous = true; // 連続認識を有効にする設定だよ
+        recognition.continuous = true; // 連続での音声認識を有効にする設定だよ
 
         recognition.onresult = function(event) {
           let interimTranscript = '';
@@ -50,7 +50,7 @@
 
         recognition.start(); // 音声認識を開始
 
-        // ボタンの表示切り替え
+        // ボタンの表示切り替え(開始と停止)
         document.getElementById('startButton').style.display = 'none';
         document.getElementById('stopButton').style.display = 'inline';
       }
