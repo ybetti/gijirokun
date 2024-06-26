@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>リアルタイム音声認識</title>
+  <style>
+    #transcript {
+      margin-top: 20px;
+      font-size: 18px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>文字起こし君２号</h1>
+  <button id="startButton" onclick="startSpeechRecognition()">音声認識開始</button>
+  <button id="stopButton" onclick="stopSpeechRecognition()" style="display: none;">音声認識停止</button>
+  <div id="transcript"></div>
+
+  <script>
+    let recognition = null;
+    const transcriptDiv = document.getElementById('transcript');
+    let transcript = '';
+
+    function startSpeechRecognition() {
+      if (!recognition) {
+        if ('webkitSpeechRecognition' in window) {
+          recognition = new webkitSpeechRecognition(); // Chrome, Safari向けの実装
+        } else if ('SpeechRecognition' in window) {
+          recognition = new SpeechRecognition(); // Edge, Firefox向けの実装
+        } else {
+          alert('このブラウザは音声認識をサポートしていません。');
+          return;
+        }
+
+        recognition.lang = 'ja-JP'; // 認識言語を日本語に設定
+        recognition.continuous = true; // 連続認識を有効にする設定だよ
+
+        recognition.onresult = function(event) {
+          let interimTranscript = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              transcript += event.results[i][0].transcript + ' ';
+            } else {
+              interimTranscript += event.results[i][0].transcript;
+            }
+          }
+          transcriptDiv.textContent = transcript + interimTranscript;
+        };
+
+        recognition.start(); // 音声認識を開始
+
+        // ボタンの表示切り替え
+        document.getElementById('startButton').style.display = 'none';
+        document.getElementById('stopButton').style.display = 'inline';
+      }
+    }
+
+    function stopSpeechRecognition() {
+      if (recognition) {
+        recognition.stop(); // 音声認識を停止
+        recognition = null;
+
+        // ボタンの表示を切り替え(開始と停止)
+        document.getElementById('startButton').style.display = 'inline';
+        document.getElementById('stopButton').style.display = 'none';
+      }
+    }
+
+  </script>
+</body>
+</html>
