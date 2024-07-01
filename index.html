@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>議事録ん</title>
+  <title>リアルタイム音声認識</title>
   <style>
     #transcript {
       margin-top: 20px;
@@ -12,9 +12,9 @@
   </style>
 </head>
 <body>
-  <h1>文字起こしくん3号</h1>
-  <button id="startButton" onclick="startSpeechRecognition()">文字起こし開始</button>
-  <button id="stopButton" onclick="stopSpeechRecognition()" style="display: none;">文字起こし停止</button>
+  <h1>リアルタイム音声認識</h1>
+  <button id="startButton" onclick="startSpeechRecognition()">音声認識開始</button>
+  <button id="stopButton" onclick="stopSpeechRecognition()" style="display: none;">音声認識停止</button>
   <div id="transcript"></div>
 
   <script>
@@ -22,6 +22,7 @@
     const transcriptDiv = document.getElementById('transcript');
     let transcript = '';
     let recognizing = false;
+    let prevResultIndex = 0;
 
     function startSpeechRecognition() {
       if (!recognition) {
@@ -40,7 +41,7 @@
 
         recognition.onresult = function(event) {
           let interimTranscript = '';
-          for (let i = event.resultIndex; i < event.results.length; i++) {
+          for (let i = prevResultIndex; i < event.results.length; i++) {
             if (event.results[i].isFinal) {
               transcript += event.results[i][0].transcript + ' ';
             } else {
@@ -48,6 +49,7 @@
             }
           }
           transcriptDiv.textContent = transcript + interimTranscript;
+          prevResultIndex = event.resultIndex + event.results.length;
         };
 
         recognition.onend = function() {
@@ -58,6 +60,7 @@
       }
 
       recognizing = true;
+      prevResultIndex = 0;
       recognition.start(); // 音声認識の開始
 
       // ボタンの表示切り替え
