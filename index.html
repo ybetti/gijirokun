@@ -9,8 +9,8 @@
       font-size: 18px;
       white-space: pre-wrap;
     }
-    #speakerSelect {
-      margin-top: 10px;
+    .speakerButton {
+      margin-right: 10px;
     }
   </style>
 </head>
@@ -18,10 +18,8 @@
   <h1>リアルタイム音声認識</h1>
   <button id="startButton" onclick="startSpeechRecognition()">音声認識開始</button>
   <button id="stopButton" onclick="stopSpeechRecognition()" style="display: none;">音声認識停止</button>
-  <select id="speakerSelect">
-    <option value="Speaker 1">話者 1</option>
-    <option value="Speaker 2">話者 2</option>
-  </select>
+  <button class="speakerButton" onclick="setSpeaker('話者 1')">話者 1</button>
+  <button class="speakerButton" onclick="setSpeaker('話者 2')">話者 2</button>
   <div id="transcript"></div>
 
   <script>
@@ -30,11 +28,13 @@
     let transcript = '';
     let recognizing = false;
     let prevResultIndex = 0;
-    let currentSpeaker = 'Speaker 1';
+    let currentSpeaker = '';
 
-    document.getElementById('speakerSelect').addEventListener('change', (event) => {
-      currentSpeaker = event.target.value;
-    });
+    function setSpeaker(speaker) {
+      currentSpeaker = speaker;
+      transcript += `\n${currentSpeaker}: `;
+      transcriptDiv.textContent = transcript;
+    }
 
     function startSpeechRecognition() {
       if (!recognition) {
@@ -55,7 +55,7 @@
           let interimTranscript = '';
           for (let i = prevResultIndex; i < event.results.length; i++) {
             if (event.results[i].isFinal) {
-              transcript += `${currentSpeaker}: ${event.results[i][0].transcript}\n`;
+              transcript += event.results[i][0].transcript + ' ';
             } else {
               interimTranscript += event.results[i][0].transcript;
             }
