@@ -26,9 +26,9 @@
     function startSpeechRecognition() {
       if (!recognition) {
         if ('webkitSpeechRecognition' in window) {
-          recognition = new webkitSpeechRecognition(); // Chrome, Safari向けの実装
+          recognition = new webkitSpeechRecognition(); // Chrome, Safari向けに実装できるようにするやつ
         } else if ('SpeechRecognition' in window) {
-          recognition = new SpeechRecognition(); // Edge, Firefox向けの実装
+          recognition = new SpeechRecognition(); // Edge, Firefox向けに実装できるようにするためのやつ
         } else {
           alert('※このブラウザは音声認識をサポートしていません。');
           return;
@@ -52,7 +52,7 @@
 
         recognition.onend = function() {
           if (recognizing) {
-            recognition.start(); // 認識が終了したら再度開始
+            recognition.start(); // 認識が終了したら再度開始する
           }
         };
       }
